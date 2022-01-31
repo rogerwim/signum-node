@@ -1,11 +1,11 @@
 /* Created by performing all steps of old migration */
-CREATE TABLE IF NOT EXISTS block (db_id IDENTITY, id BIGINT NOT NULL, version INT NOT NULL,
+CREATE TABLE IF NOT EXISTS block (db_id IDENTITY, id BIGINT NOT NULL UNIQUE, version INT NOT NULL,
     timestamp INT NOT NULL, previous_block_id BIGINT,
     FOREIGN KEY (previous_block_id) REFERENCES block (id) ON DELETE CASCADE, total_amount INT NOT NULL,
     total_fee INT NOT NULL, payload_length INT NOT NULL, generator_public_key BINARY(32) NOT NULL,
     previous_block_hash BINARY(32), cumulative_difficulty VARBINARY NOT NULL, base_target BIGINT NOT NULL,
     next_block_id BIGINT, FOREIGN KEY (next_block_id) REFERENCES block (id) ON DELETE SET NULL,
-    index INT NOT NULL, height INT NOT NULL, generation_signature BINARY(64) NOT NULL,
+    index INT NOT NULL, height INT NOT NULL, generation_signature VARBINARY(64) NOT NULL,
     block_signature BINARY(64) NOT NULL, payload_hash BINARY(32) NOT NULL, generator_account_id BIGINT NOT NULL, nonce BIGINT NOT NULL);
 CREATE UNIQUE INDEX IF NOT EXISTS block_id_idx ON block (id);
 CREATE TABLE IF NOT EXISTS transaction (db_id IDENTITY, id BIGINT NOT NULL,
@@ -39,7 +39,7 @@ ALTER TABLE transaction ADD COLUMN IF NOT EXISTS full_hash BINARY(32);
 ALTER TABLE transaction ADD COLUMN IF NOT EXISTS referenced_transaction_full_hash BINARY(32);
 ALTER TABLE transaction ALTER COLUMN full_hash SET NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS transaction_full_hash_idx ON transaction (full_hash);
-ALTER TABLE transaction ADD COLUMN IF NOT EXISTS attachment_bytes VARBINARY;
+ALTER TABLE transaction ADD COLUMN IF NOT EXISTS attachment_bytes VARBINARY(51200);
 ALTER TABLE transaction DROP COLUMN attachment;
 ALTER TABLE transaction DROP COLUMN referenced_transaction_id;
 ALTER TABLE transaction DROP COLUMN hash;
@@ -107,9 +107,9 @@ CREATE INDEX IF NOT EXISTS goods_timestamp_idx ON goods (timestamp DESC, height 
 CREATE TABLE IF NOT EXISTS purchase (db_id IDENTITY, id BIGINT NOT NULL, buyer_id BIGINT NOT NULL,
     goods_id BIGINT NOT NULL,
     seller_id BIGINT NOT NULL, quantity INT NOT NULL,
-    price BIGINT NOT NULL, deadline INT NOT NULL, note VARBINARY, nonce BINARY(32),
-    timestamp INT NOT NULL, pending BOOLEAN NOT NULL, goods VARBINARY, goods_nonce BINARY(32),
-    refund_note VARBINARY, refund_nonce BINARY(32), has_feedback_notes BOOLEAN NOT NULL DEFAULT FALSE,
+    price BIGINT NOT NULL, deadline INT NOT NULL, note VARBINARY(1048), nonce BINARY(32),
+    timestamp INT NOT NULL, pending BOOLEAN NOT NULL, goods VARBINARY(1048), goods_nonce BINARY(32),
+    refund_note VARBINARY(1048), refund_nonce BINARY(32), has_feedback_notes BOOLEAN NOT NULL DEFAULT FALSE,
     has_public_feedbacks BOOLEAN NOT NULL DEFAULT FALSE, discount BIGINT NOT NULL, refund BIGINT NOT NULL,
     height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE UNIQUE INDEX IF NOT EXISTS purchase_id_height_idx ON purchase (id, height DESC);
@@ -127,15 +127,15 @@ CREATE TABLE IF NOT EXISTS account_asset (db_id IDENTITY, account_id BIGINT NOT 
     asset_id BIGINT NOT NULL, quantity BIGINT NOT NULL, unconfirmed_quantity BIGINT NOT NULL, height INT NOT NULL,
     latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE UNIQUE INDEX IF NOT EXISTS account_asset_id_height_idx ON account_asset (account_id, asset_id, height DESC);
-CREATE TABLE IF NOT EXISTS purchase_feedback (db_id IDENTITY, id BIGINT NOT NULL, feedback_data VARBINARY NOT NULL,
+CREATE TABLE IF NOT EXISTS purchase_feedback (db_id IDENTITY, id BIGINT NOT NULL, feedback_data VARBINARY(1048) NOT NULL,
     feedback_nonce BINARY(32) NOT NULL, height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE INDEX IF NOT EXISTS purchase_feedback_id_height_idx ON purchase_feedback (id, height DESC);
 CREATE TABLE IF NOT EXISTS purchase_public_feedback (db_id IDENTITY, id BIGINT NOT NULL, public_feedback
     VARCHAR NOT NULL, height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE INDEX IF NOT EXISTS purchase_public_feedback_id_height_idx ON purchase_public_feedback (id, height DESC);
-CREATE TABLE IF NOT EXISTS unconfirmed_transaction (db_id IDENTITY, id BIGINT NOT NULL, expiration INT NOT NULL,
+CREATE TABLE IF NOT EXISTS unconfirmed_transaction (db_id IDENTITY, id BIGINT NOT NULL UNIQUE, expiration INT NOT NULL,
     transaction_height INT NOT NULL, fee_per_byte BIGINT NOT NULL, timestamp INT NOT NULL,
-    transaction_bytes VARBINARY NOT NULL, height INT NOT NULL);
+    transaction_bytes VARBINARY(1048) NOT NULL, height INT NOT NULL);
 CREATE UNIQUE INDEX IF NOT EXISTS unconfirmed_transaction_id_idx ON unconfirmed_transaction (id);
 CREATE INDEX IF NOT EXISTS unconfirmed_transaction_height_fee_timestamp_idx ON unconfirmed_transaction
     (transaction_height ASC, fee_per_byte DESC, timestamp ASC);
@@ -176,16 +176,16 @@ CREATE INDEX IF NOT EXISTS subscription_recipient_id_height_idx ON subscription 
 CREATE UNIQUE INDEX IF NOT EXISTS block_timestamp_idx ON block (timestamp DESC);
 CREATE TABLE IF NOT EXISTS at (db_id IDENTITY, id BIGINT NOT NULL, creator_id BIGINT NOT NULL, name VARCHAR, description VARCHAR,
     version SMALLINT NOT NULL, csize INT NOT NULL, dsize INT NOT NULL, c_user_stack_bytes INT NOT NULL, c_call_stack_bytes INT NOT NULL,
-    creation_height INT NOT NULL, ap_code BINARY NOT NULL,
+    creation_height INT NOT NULL, ap_code VARBINARY(5120) NOT NULL,
     height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE UNIQUE INDEX IF NOT EXISTS at_id_height_idx ON at (id, height DESC);
 CREATE INDEX IF NOT EXISTS at_creator_id_height_idx ON at (creator_id, height DESC);
-CREATE TABLE IF NOT EXISTS at_state (db_id IDENTITY, at_id BIGINT NOT NULL, state BINARY NOT NULL, prev_height INT NOT NULL,
+CREATE TABLE IF NOT EXISTS at_state (db_id IDENTITY, at_id BIGINT NOT NULL, state VARBINARY(5120) NOT NULL, prev_height INT NOT NULL,
     next_height INT NOT NULL, sleep_between INT NOT NULL,
     prev_balance BIGINT NOT NULL, freeze_when_same_balance BOOLEAN NOT NULL, min_activate_amount BIGINT NOT NULL, height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 CREATE UNIQUE INDEX IF NOT EXISTS at_state_at_id_height_idx ON at_state (at_id, height DESC);
 CREATE INDEX IF NOT EXISTS at_state_id_next_height_height_idx ON at_state (at_id, next_height, height DESC);
-ALTER TABLE block ADD COLUMN IF NOT EXISTS ats BINARY;
+ALTER TABLE block ADD COLUMN IF NOT EXISTS ats VARBINARY(800000);
 CREATE INDEX IF NOT EXISTS account_id_balance_height_idx ON account (id, balance, height DESC);
 CREATE INDEX IF NOT EXISTS transaction_recipient_id_amount_height_idx ON transaction (recipient_id, amount, height);
 DROP INDEX IF EXISTS account_guaranteed_balance_id_height_idx;

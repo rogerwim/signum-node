@@ -148,7 +148,7 @@ public abstract class EntitySqlTable<T> extends DerivedSqlTable implements Entit
 
   private T get(DSLContext ctx, SelectQuery<Record> query, boolean cache) {
     final boolean doCache = cache && Db.isInTransaction();
-    Record record = query.fetchOne();
+    Record record = query.fetchAny();
     if (record == null) return null;
     T t = null;
     DbKey dbKey = null;

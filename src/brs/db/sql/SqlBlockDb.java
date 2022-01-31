@@ -65,7 +65,7 @@ public class SqlBlockDb implements BlockDb {
   public Block findLastBlock() {
     return Db.useDSLContext(ctx -> {
       try {
-        return loadBlock(ctx.selectFrom(BLOCK).orderBy(BLOCK.DB_ID.desc()).limit(1).fetchAny());
+        return loadBlock(ctx.selectFrom(BLOCK).orderBy(BLOCK.DB_ID.desc()).fetchAny());
       } catch (BurstException.ValidationException e) {
         throw new RuntimeException("Last block already in database does not pass validation!", e);
       }
