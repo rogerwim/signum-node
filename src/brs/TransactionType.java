@@ -67,6 +67,11 @@ public abstract class TransactionType {
   public static final byte SUBTYPE_COLORED_COINS_ASSET_MINT = 6;
   public static final byte SUBTYPE_COLORED_COINS_ADD_TREASURY_ACCOUNT = 7;
   public static final byte SUBTYPE_COLORED_COINS_DISTRIBUTE_TO_HOLDERS = 8;
+  public static final byte SUBTYPE_COLORED_COINS_LP_CREATION = 9;
+  public static final byte SUBTYPE_COLORED_COINS_LP_LIQUIDITY_ADDITION = 10;
+  public static final byte SUBTYPE_COLORED_COINS_LP_LIQUIDITY_REMOVAL = 11;
+  public static final byte SUBTYPE_COLORED_COINS_LP_SWAP = 12;
+
 
   public static final byte SUBTYPE_DIGITAL_GOODS_LISTING = 0;
   public static final byte SUBTYPE_DIGITAL_GOODS_DELISTING = 1;

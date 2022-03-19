@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS lp (db_id IDENTITY, version TINYINT, lp_id BIGINT NOT NULL,
+    swap_fee INT NOT NULL, platform_fee INT NOT NULL, patform_account_id BIGINT NOT NULL,
+    height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
+
+CREATE TABLE IF NOT EXISTS lp_tokens (db_id IDENTITY, lp_id BIGINT NOT NULL,
+    token_id BIGINT NOT NULL, factor INT NOT NULL,
+    height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
+
+CREATE TABLE IF NOT EXISTS lp_balances (db_id IDENTITY, lp_id BIGINT NOT NULL,
+    token_id BIGINT NOT NULL, balance BIGINT NOT NULL,
+    height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
+
