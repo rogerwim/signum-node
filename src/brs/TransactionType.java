@@ -1448,6 +1448,78 @@ public abstract class TransactionType {
     };
 
 
+    public static final TransactionType LP_CREATION = new ColoredCoins() {
+
+      @Override
+      public final byte getSubtype() {
+        return TransactionType.SUBTYPE_COLORED_COINS_LP_CREATION;
+      }
+
+      @Override
+      public String getDescription() {
+        return "LP Creation";
+      }
+
+      @Override
+      public Fee getBaselineFee(int height) {
+        return new Fee(fluxCapacitor.getValue(FluxValues.FEE_QUANT, height) * BASELINE_ASSET_ISSUANCE_FACTOR, 0);
+      }
+
+      @Override
+      public Attachment.ColoredCoinsLPCreation parseAttachment(ByteBuffer buffer, byte transactionVersion) throws BurstException.NotValidException {
+        return new Attachment.ColoredCoinsLPCreation(buffer, transactionVersion);
+      }
+
+      @Override
+      protected Attachment.ColoredCoinsLPCreation parseAttachment(JsonObject attachmentData) {
+        return new Attachment.ColoredCoinsLPCreation(attachmentData);
+      }
+
+      @Override
+      protected boolean applyAttachmentUnconfirmed(Transaction transaction, Account senderAccount) {
+        return true;
+      }
+
+      @Override
+      protected void applyAttachment(Transaction transaction, Account senderAccount, Account recipientAccount) {
+        Attachment.ColoredCoinsLPCreation attachment = (Attachment.ColoredCoinsLPCreation) transaction.getAttachment();
+        assetExchange.addLP(transaction, attachment);
+      }
+
+      @Override
+      protected void undoAttachmentUnconfirmed(Transaction transaction, Account senderAccount) {
+        // Nothing to undo
+      }
+
+      @Override
+      protected void validateAttachment(Transaction transaction) throws BurstException.ValidationException {
+        Attachment.ColoredCoinsLPCreation attachment = (Attachment.ColoredCoinsLPCreation)transaction.getAttachment();
+        boolean invalid = attachment.getName().length() < Constants.MIN_ASSET_NAME_LENGTH
+                || attachment.getName().length()+3 > Constants.MAX_ASSET_NAME_LENGTH
+                || (attachment.getVersion()!=1)
+                ;
+        if(attachment.getFactors().size() != attachment.getTokens().size() || attachment.getTokens().size() < 2)
+          invalid = true;
+        for(Integer factor : attachment.getFactors()) {
+          if(factor < 0 || factor > 100) {
+            invalid = true;
+          }
+        }
+        if(invalid) {
+          throw new BurstException.NotValidException("Invalid LP creation: " + JSON.toJsonString(attachment.getJsonObject()));
+        }
+        if (!TextUtils.isInAlphabet(attachment.getName())) {
+          throw new BurstException.NotValidException("Invalid LP name: " + attachment.getName());
+        }
+      }
+
+      @Override
+      public boolean hasRecipient() {
+        return false;
+      }
+
+    };
+
     abstract static class ColoredCoinsOrderPlacement extends ColoredCoins {
 
       @Override

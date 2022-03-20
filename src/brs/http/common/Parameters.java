@@ -74,6 +74,11 @@ public final class Parameters {
   public static final String DECISION_PARAMETER = "decision";
   public static final String DECIMALS_PARAMETER = "decimals";
   public static final String MINTABLE_PARAMETER = "mintable";
+  public static final String SWAP_FEE_PARAMETER = "swapFee";
+  public static final String PLATFORM_FEE_PARAMETER = "platformFee";
+  public static final String PLATFORM_ACCOUNT_ID_PARAMETER = "platformAccountId";
+  public static final String TOKENS_PARAMETER = "tokens";
+  public static final String FACTORS_PARAMETER = "factors";
   public static final String PERIOD_PARAMETER = "period";
   public static final String ESCROW_DEADLINE_PARAMETER = "escrowDeadline";
   public static final String DEADLINE_ACTION_PARAMETER = "deadlineAction";

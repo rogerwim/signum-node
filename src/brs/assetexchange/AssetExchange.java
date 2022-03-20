@@ -6,6 +6,7 @@ import brs.Attachment.ColoredCoinsAskOrderPlacement;
 import brs.Attachment.ColoredCoinsAssetIssuance;
 import brs.Attachment.ColoredCoinsAssetTransfer;
 import brs.Attachment.ColoredCoinsBidOrderPlacement;
+import brs.Attachment.ColoredCoinsLPCreation;
 import brs.Order.Ask;
 import brs.Order.Bid;
 import brs.Trade.Event;
@@ -32,6 +33,8 @@ public interface AssetExchange {
   Ask getAskOrder(long orderId);
 
   void addAsset(Transaction transaction, ColoredCoinsAssetIssuance attachment);
+
+  void addLP(Transaction transaction, ColoredCoinsLPCreation attachment);
 
   void addAssetTransfer(Transaction transaction, ColoredCoinsAssetTransfer attachment);
 

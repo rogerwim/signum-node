@@ -7,6 +7,7 @@ import brs.Attachment.ColoredCoinsAskOrderPlacement;
 import brs.Attachment.ColoredCoinsAssetIssuance;
 import brs.Attachment.ColoredCoinsAssetTransfer;
 import brs.Attachment.ColoredCoinsBidOrderPlacement;
+import brs.Attachment.ColoredCoinsLPCreation;
 import brs.Order.Ask;
 import brs.Order.Bid;
 import brs.Trade;
@@ -213,5 +214,11 @@ public class AssetExchangeImpl implements AssetExchange {
   @Override
   public Collection<Bid> getSortedBidOrders(long assetId, int from, int to) {
     return orderService.getSortedBidOrders(assetId, from, to);
+  }
+
+  @Override
+  public void addLP(Transaction transaction, ColoredCoinsLPCreation attachment) {
+    // TODO Auto-generated method stub
+    
   }
 }

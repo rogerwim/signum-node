@@ -1121,6 +1121,150 @@ public interface Attachment extends Appendix {
     }
 
   }
+  
+  class ColoredCoinsLPCreation extends AbstractAttachment {
+
+    private final String name;
+    private final int swapFee;
+    private final int platformFee;
+    private final long platformAccountId;
+    private final ArrayList<Long> tokens = new ArrayList<>();
+    private final ArrayList<Integer> factors = new ArrayList<>();
+
+    ColoredCoinsLPCreation(ByteBuffer buffer, byte transactionVersion) throws BurstException.NotValidException {
+      super(buffer, transactionVersion);
+      this.name = Convert.readString(buffer, buffer.get(), Constants.MAX_ASSET_NAME_LENGTH - 3);
+      this.swapFee = buffer.getInt();
+      this.platformFee = buffer.getInt();
+      this.platformAccountId = buffer.getLong();
+      
+      if (swapFee < 0 || platformFee < 0) {
+        throw new BurstException.NotValidException("Invalid fee");
+      }
+      
+      byte numberOfTokens = buffer.get();
+      if (numberOfTokens > 8 || numberOfTokens < 2) {
+        throw new BurstException.NotValidException("Max number of tokens exceeded");
+      }
+      for (int i = 0; i < numberOfTokens; i++) {
+        tokens.add(buffer.getLong());
+      }
+      for (int i = 0; i < numberOfTokens; i++) {
+        int factor = buffer.getInt();
+        if (factor < 0 || factor > 100) {
+          throw new BurstException.NotValidException("Invalid factor");
+        }
+        factors.add(factor);
+      }
+    }
+
+    ColoredCoinsLPCreation(JsonObject attachmentData) {
+      super(attachmentData);
+      this.name = JSON.getAsString(attachmentData.get(NAME_PARAMETER));
+      this.swapFee = JSON.getAsInt(attachmentData.get(SWAP_FEE_PARAMETER));
+      this.platformFee = JSON.getAsInt(attachmentData.get(PLATFORM_FEE_PARAMETER));
+      this.platformAccountId = Convert.parseUnsignedLong(JSON.getAsString(attachmentData.get(PLATFORM_ACCOUNT_ID_PARAMETER)));
+      
+      JsonArray tokensJson = JSON.getAsJsonArray(attachmentData.get(TOKENS_PARAMETER));
+      for (JsonElement tokenJson : tokensJson) {
+        this.tokens.add(Convert.parseUnsignedLong(JSON.getAsString(tokenJson)));
+      }
+      JsonArray factorsJson = JSON.getAsJsonArray(attachmentData.get(FACTORS_PARAMETER));
+      for (JsonElement factorJson : factorsJson) {
+        this.factors.add(JSON.getAsInt((factorJson)));
+      }
+    }
+
+    public ColoredCoinsLPCreation(String name, int swapFee, int platformFee, long platformAccountId,
+        Collection<Long> tokens, Collection<Integer> factors) {
+      super((byte)(1));
+      this.name = name;
+      this.swapFee = swapFee;
+      this.platformFee = platformFee;
+      this.platformAccountId = platformAccountId;
+      this.tokens.addAll(tokens);
+      this.factors.addAll(factors);
+    }
+
+    @Override
+    protected String getAppendixName() {
+      return "LPCreation";
+    }
+
+    @Override
+    protected int getMySize() {
+      return 1 + 1 + Convert.toBytes(name).length + 4 + 4 + 8 + (8 * tokens.size()) + (4 * factors.size());
+    }
+
+    @Override
+    protected void putMyBytes(ByteBuffer buffer) {
+      byte[] name = Convert.toBytes(this.name);
+      buffer.put((byte)name.length);
+      buffer.put(name);
+      buffer.putInt(swapFee);
+      buffer.putInt(platformFee);
+      buffer.putLong(platformAccountId);
+      
+      buffer.put((byte) tokens.size());
+      for(Long token : tokens) {
+        buffer.putLong(token);
+      }
+      for(Integer factor : factors) {
+        buffer.putInt(factor);
+      }
+    }
+
+    @Override
+    protected void putMyJSON(JsonObject attachment) {
+      attachment.addProperty(NAME_RESPONSE, name);
+      attachment.addProperty(SWAP_FEE_PARAMETER, swapFee);
+      attachment.addProperty(PLATFORM_FEE_PARAMETER, platformFee);
+      attachment.addProperty(PLATFORM_ACCOUNT_ID_PARAMETER, Convert.toUnsignedLong(platformAccountId));
+      
+      JsonArray tokensArray = new JsonArray();
+      for(Long token : this.tokens) {
+        tokensArray.add(Convert.toUnsignedLong(token));
+      }
+      attachment.add(TOKENS_PARAMETER, tokensArray);
+      
+      JsonArray factorsArray = new JsonArray();
+      for(Integer factor : this.factors) {
+        factorsArray.add(factor);
+      }
+      attachment.add(FACTORS_PARAMETER, factorsArray);
+    }
+
+    @Override
+    public TransactionType getTransactionType() {
+      return TransactionType.ColoredCoins.LP_CREATION;
+    }
+
+    public String getName() {
+      return name;
+    }
+    
+    public int getSwapFee() {
+      return swapFee;
+    }
+    
+    public int getPlatformFee() {
+      return platformFee;
+    }
+    
+    public long getPlatformAccountId() {
+      return platformAccountId;
+    }
+
+    public Collection<Long> getTokens() {
+      return Collections.unmodifiableCollection(tokens);
+    }
+
+    public Collection<Integer> getFactors() {
+      return Collections.unmodifiableCollection(factors);
+    }
+
+  }
+
 
   final class DigitalGoodsListing extends AbstractAttachment {
 
