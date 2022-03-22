@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS lp (db_id IDENTITY, version TINYINT, lp_id BIGINT NOT NULL,
-    swap_fee INT NOT NULL, platform_fee INT NOT NULL, patform_account_id BIGINT NOT NULL,
+    name VARCHAR NOT NULL,
+    swap_fee INT NOT NULL, platform_fee INT NOT NULL, platform_account_id BIGINT NOT NULL,
     height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE);
 
 CREATE TABLE IF NOT EXISTS lp_tokens (db_id IDENTITY, lp_id BIGINT NOT NULL,

@@ -34,6 +34,17 @@ public class Asset {
     this.decimals = attachment.getDecimals();
     this.mintable = attachment.getMintable();
   }
+  
+  public Asset(BurstKey dbKey, Transaction transaction, Attachment.ColoredCoinsLPCreation attachment) {
+    this.dbKey = dbKey;
+    this.assetId = transaction.getId();
+    this.accountId = 0L;
+    this.name = "LP-" + attachment.getName();
+    this.description = "";
+    this.quantityQNT = 0L;
+    this.decimals = 4;
+    this.mintable = true;
+  }
 
   public long getId() {
     return assetId;

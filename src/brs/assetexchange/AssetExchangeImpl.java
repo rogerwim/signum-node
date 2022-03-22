@@ -218,7 +218,6 @@ public class AssetExchangeImpl implements AssetExchange {
 
   @Override
   public void addLP(Transaction transaction, ColoredCoinsLPCreation attachment) {
-    // TODO Auto-generated method stub
-    
+    assetService.addAsset(transaction, attachment);
   }
 }

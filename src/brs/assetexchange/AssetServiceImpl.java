@@ -60,5 +60,10 @@ class AssetServiceImpl {
     final BurstKey dbKey = assetDbKeyFactory.newKey(transaction.getId());
     assetTable.insert(new Asset(dbKey, transaction, attachment));
   }
+  
+  public void addAsset(Transaction transaction, Attachment.ColoredCoinsLPCreation attachment) {
+    final BurstKey dbKey = assetDbKeyFactory.newKey(transaction.getId());
+    assetTable.insert(new Asset(dbKey, transaction, attachment));
+  }
 
 }

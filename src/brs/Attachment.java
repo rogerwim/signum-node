@@ -91,7 +91,7 @@ public interface Attachment extends Appendix {
     }
 
   };
-  
+
   EmptyAttachment ASSET_ADD_TREASURY_ACCOUNT_ATTACHMENT = new EmptyAttachment() {
 
     @Override
@@ -612,7 +612,7 @@ public interface Attachment extends Appendix {
       this.description = Convert.readString(buffer, buffer.getShort(), Constants.MAX_ASSET_DESCRIPTION_LENGTH);
       this.quantityQNT = buffer.getLong();
       this.decimals = buffer.get();
-      
+
       boolean mintable = false;
       if(super.getVersion() > 1) {
         mintable = buffer.get() == 1;
@@ -776,7 +776,7 @@ public interface Attachment extends Appendix {
     }
 
   }
-  
+
   final class ColoredCoinsAssetMint extends AbstractAttachment {
 
     private final long assetId;
@@ -834,9 +834,9 @@ public interface Attachment extends Appendix {
     public long getQuantityQNT() {
       return quantityQNT;
     }
-    
+
   }
-  
+
   final class ColoredCoinsAssetDistributeToHolders extends AbstractAttachment {
 
     private final long assetId;
@@ -902,7 +902,7 @@ public interface Attachment extends Appendix {
     public long getAssetId() {
       return assetId;
     }
-    
+
     public long getMinimumAssetQuantityQNT() {
       return minimumAssetQuantityQNT;
     }
@@ -1121,7 +1121,7 @@ public interface Attachment extends Appendix {
     }
 
   }
-  
+
   class ColoredCoinsLPCreation extends AbstractAttachment {
 
     private final String name;
@@ -1137,14 +1137,14 @@ public interface Attachment extends Appendix {
       this.swapFee = buffer.getInt();
       this.platformFee = buffer.getInt();
       this.platformAccountId = buffer.getLong();
-      
+
       if (swapFee < 0 || platformFee < 0) {
         throw new BurstException.NotValidException("Invalid fee");
       }
-      
+
       byte numberOfTokens = buffer.get();
       if (numberOfTokens > 8 || numberOfTokens < 2) {
-        throw new BurstException.NotValidException("Max number of tokens exceeded");
+        throw new BurstException.NotValidException("Invalid number of tokens");
       }
       for (int i = 0; i < numberOfTokens; i++) {
         tokens.add(buffer.getLong());
@@ -1164,7 +1164,7 @@ public interface Attachment extends Appendix {
       this.swapFee = JSON.getAsInt(attachmentData.get(SWAP_FEE_PARAMETER));
       this.platformFee = JSON.getAsInt(attachmentData.get(PLATFORM_FEE_PARAMETER));
       this.platformAccountId = Convert.parseUnsignedLong(JSON.getAsString(attachmentData.get(PLATFORM_ACCOUNT_ID_PARAMETER)));
-      
+
       JsonArray tokensJson = JSON.getAsJsonArray(attachmentData.get(TOKENS_PARAMETER));
       for (JsonElement tokenJson : tokensJson) {
         this.tokens.add(Convert.parseUnsignedLong(JSON.getAsString(tokenJson)));
@@ -1204,7 +1204,7 @@ public interface Attachment extends Appendix {
       buffer.putInt(swapFee);
       buffer.putInt(platformFee);
       buffer.putLong(platformAccountId);
-      
+
       buffer.put((byte) tokens.size());
       for(Long token : tokens) {
         buffer.putLong(token);
@@ -1220,13 +1220,13 @@ public interface Attachment extends Appendix {
       attachment.addProperty(SWAP_FEE_PARAMETER, swapFee);
       attachment.addProperty(PLATFORM_FEE_PARAMETER, platformFee);
       attachment.addProperty(PLATFORM_ACCOUNT_ID_PARAMETER, Convert.toUnsignedLong(platformAccountId));
-      
+
       JsonArray tokensArray = new JsonArray();
       for(Long token : this.tokens) {
         tokensArray.add(Convert.toUnsignedLong(token));
       }
       attachment.add(TOKENS_PARAMETER, tokensArray);
-      
+
       JsonArray factorsArray = new JsonArray();
       for(Integer factor : this.factors) {
         factorsArray.add(factor);
@@ -1242,15 +1242,15 @@ public interface Attachment extends Appendix {
     public String getName() {
       return name;
     }
-    
+
     public int getSwapFee() {
       return swapFee;
     }
-    
+
     public int getPlatformFee() {
       return platformFee;
     }
-    
+
     public long getPlatformAccountId() {
       return platformAccountId;
     }
@@ -1858,9 +1858,9 @@ public interface Attachment extends Appendix {
     public TransactionType getTransactionType() {
       return TransactionType.BurstMining.REWARD_RECIPIENT_ASSIGNMENT;
     }
-    
+
   }
-  
+
 
   abstract class CommitmentAttachment extends AbstractAttachment {
 
@@ -1901,7 +1901,7 @@ public interface Attachment extends Appendix {
     }
 
   }
-  
+
   final class CommitmentAdd extends CommitmentAttachment {
 
     CommitmentAdd(ByteBuffer buffer, byte transactionVersion) {
@@ -1927,7 +1927,7 @@ public interface Attachment extends Appendix {
     }
 
   }
-  
+
   final class CommitmentRemove extends CommitmentAttachment {
 
     CommitmentRemove(ByteBuffer buffer, byte transactionVersion) {
@@ -1951,10 +1951,10 @@ public interface Attachment extends Appendix {
     public TransactionType getTransactionType() {
       return TransactionType.BurstMining.COMMITMENT_REMOVE;
     }
-    
+
   }
-  
-  
+
+
   final class AdvancedPaymentEscrowCreation extends AbstractAttachment {
 
     private final Long amountNQT;
