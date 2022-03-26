@@ -25,10 +25,10 @@ public class SqlLPStore implements PoolStore {
       }
 
     };
-  private final EntitySqlTable<Pool> assetTable;
+  private final EntitySqlTable<Pool> lpTable;
 
   public SqlLPStore(DerivedTableManager derivedTableManager) {
-    assetTable = new EntitySqlTable<Pool>("lp", brs.schema.Tables.LP, assetDbKeyFactory, derivedTableManager) {
+    lpTable = new EntitySqlTable<Pool>("lp", brs.schema.Tables.LP, assetDbKeyFactory, derivedTableManager) {
 
       @Override
       protected Pool load(DSLContext ctx, Record record) {
@@ -85,6 +85,11 @@ public class SqlLPStore implements PoolStore {
 
   @Override
   public EntitySqlTable<Pool> getPoolTable() {
-    return assetTable;
+    return lpTable;
+  }
+  
+  @Override
+  public Collection<Pool> getLPsByPlatform(long platformId, int from, int to){
+    return lpTable.getManyBy(LP.PLATFORM_ACCOUNT_ID.eq(platformId), from, to);
   }
 }

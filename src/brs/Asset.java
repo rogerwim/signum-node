@@ -39,7 +39,7 @@ public class Asset {
     this.dbKey = dbKey;
     this.assetId = transaction.getId();
     this.accountId = 0L;
-    this.name = "LP-" + attachment.getName();
+    this.name = "LP" + attachment.getName();
     this.description = "";
     this.quantityQNT = 0L;
     this.decimals = 4;

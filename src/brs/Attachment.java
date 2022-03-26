@@ -1133,7 +1133,7 @@ public interface Attachment extends Appendix {
 
     ColoredCoinsLPCreation(ByteBuffer buffer, byte transactionVersion) throws BurstException.NotValidException {
       super(buffer, transactionVersion);
-      this.name = Convert.readString(buffer, buffer.get(), Constants.MAX_ASSET_NAME_LENGTH - 3);
+      this.name = Convert.readString(buffer, buffer.get(), Constants.MAX_ASSET_NAME_LENGTH - 2);
       this.swapFee = buffer.getInt();
       this.platformFee = buffer.getInt();
       this.platformAccountId = buffer.getLong();

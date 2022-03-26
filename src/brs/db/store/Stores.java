@@ -14,6 +14,7 @@ public class Stores {
   private final AliasStore aliasStore;
   private final AssetTransferStore assetTransferStore;
   private final AssetStore assetStore;
+  private final SqlLPStore lpStore;
   private final ATStore atStore;
   private final BlockchainStore blockchainStore;
   private final DigitalGoodsStoreStore digitalGoodsStoreStore;
@@ -29,6 +30,7 @@ public class Stores {
     this.accountStore                = new SqlAccountStore(derivedTableManager, dbCacheManager);
     this.aliasStore                  = new SqlAliasStore(derivedTableManager);
     this.assetStore                  = new SqlAssetStore(derivedTableManager);
+    this.lpStore                     = new SqlLPStore(derivedTableManager);
     this.assetTransferStore          = new SqlAssetTransferStore(derivedTableManager);
     this.atStore                     = new SqlATStore(derivedTableManager);
     this.digitalGoodsStoreStore      = new SqlDigitalGoodsStoreStore(derivedTableManager);
@@ -51,6 +53,10 @@ public class Stores {
 
   public AssetStore getAssetStore() {
     return assetStore;
+  }
+  
+  public SqlLPStore getLPStore() {
+    return lpStore;
   }
 
   public AssetTransferStore getAssetTransferStore() {

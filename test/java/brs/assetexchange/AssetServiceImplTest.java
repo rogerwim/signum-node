@@ -11,6 +11,8 @@ import brs.db.BurstKey;
 import brs.db.BurstKey.LongKeyFactory;
 import brs.db.sql.EntitySqlTable;
 import brs.db.store.AssetStore;
+import brs.db.store.PoolStore;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -31,6 +33,7 @@ public class AssetServiceImplTest extends AbstractUnitTest {
   private AssetTransferServiceImpl assetTransferServicMock;
   private TradeServiceImpl tradeServiceMock;
   private AssetStore assetStoreMock;
+  private PoolStore lpStoreMock;
   private EntitySqlTable assetTableMock;
   private LongKeyFactory assetDbKeyFactoryMock;
 
@@ -41,13 +44,14 @@ public class AssetServiceImplTest extends AbstractUnitTest {
     tradeServiceMock = mock(TradeServiceImpl.class);
 
     assetStoreMock = mock(AssetStore.class);
+    lpStoreMock = mock(PoolStore.class);
     assetTableMock = mock(EntitySqlTable.class);
     assetDbKeyFactoryMock = mock(LongKeyFactory.class);
 
     when(assetStoreMock.getAssetTable()).thenReturn(assetTableMock);
     when(assetStoreMock.getAssetDbKeyFactory()).thenReturn(assetDbKeyFactoryMock);
 
-    t = new AssetServiceImpl(assetAccountServiceMock, tradeServiceMock, assetStoreMock, assetTransferServicMock);
+    t = new AssetServiceImpl(assetAccountServiceMock, tradeServiceMock, assetStoreMock, lpStoreMock, assetTransferServicMock);
   }
 
   @Test

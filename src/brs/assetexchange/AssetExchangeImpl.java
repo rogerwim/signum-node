@@ -13,6 +13,7 @@ import brs.Order.Bid;
 import brs.Trade;
 import brs.Trade.Event;
 import brs.Transaction;
+import brs.db.sql.SqlLPStore;
 import brs.db.store.*;
 import brs.services.AccountService;
 import brs.util.Listener;
@@ -28,11 +29,12 @@ public class AssetExchangeImpl implements AssetExchange {
   private final OrderServiceImpl orderService;
 
 
-  public AssetExchangeImpl(AccountService accountService, TradeStore tradeStore, AccountStore accountStore, AssetTransferStore assetTransferStore, AssetStore assetStore, OrderStore orderStore) {
+  public AssetExchangeImpl(AccountService accountService, TradeStore tradeStore, AccountStore accountStore,
+      AssetTransferStore assetTransferStore, AssetStore assetStore, OrderStore orderStore, PoolStore lpStore) {
     this.tradeService = new TradeServiceImpl(tradeStore);
     this.assetAccountService = new AssetAccountServiceImpl(accountStore);
     this.assetTransferService = new AssetTransferServiceImpl(assetTransferStore);
-    this.assetService = new AssetServiceImpl(this.assetAccountService, tradeService, assetStore, assetTransferService);
+    this.assetService = new AssetServiceImpl(this.assetAccountService, tradeService, assetStore, lpStore, assetTransferService);
     this.orderService = new OrderServiceImpl(orderStore, accountService, tradeService);
   }
 
@@ -218,6 +220,6 @@ public class AssetExchangeImpl implements AssetExchange {
 
   @Override
   public void addLP(Transaction transaction, ColoredCoinsLPCreation attachment) {
-    assetService.addAsset(transaction, attachment);
+    assetService.addLP(transaction, attachment);
   }
 }
