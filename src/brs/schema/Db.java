@@ -21,8 +21,8 @@ import brs.schema.tables.FlywaySchemaHistory;
 import brs.schema.tables.Goods;
 import brs.schema.tables.IndirectIncoming;
 import brs.schema.tables.Lp;
+import brs.schema.tables.LpAssets;
 import brs.schema.tables.LpBalances;
-import brs.schema.tables.LpTokens;
 import brs.schema.tables.Peer;
 import brs.schema.tables.Purchase;
 import brs.schema.tables.PurchaseFeedback;
@@ -140,14 +140,14 @@ public class Db extends SchemaImpl {
     public final Lp LP = Lp.LP;
 
     /**
+     * The table <code>DB.lp_assets</code>.
+     */
+    public final LpAssets LP_ASSETS = LpAssets.LP_ASSETS;
+
+    /**
      * The table <code>DB.lp_balances</code>.
      */
     public final LpBalances LP_BALANCES = LpBalances.LP_BALANCES;
-
-    /**
-     * The table <code>DB.lp_tokens</code>.
-     */
-    public final LpTokens LP_TOKENS = LpTokens.LP_TOKENS;
 
     /**
      * The table <code>DB.peer</code>.
@@ -227,8 +227,8 @@ public class Db extends SchemaImpl {
             Goods.GOODS,
             IndirectIncoming.INDIRECT_INCOMING,
             Lp.LP,
+            LpAssets.LP_ASSETS,
             LpBalances.LP_BALANCES,
-            LpTokens.LP_TOKENS,
             Peer.PEER,
             Purchase.PURCHASE,
             PurchaseFeedback.PURCHASE_FEEDBACK,

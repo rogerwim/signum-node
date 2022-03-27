@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS lp (db_id bigint(20) NOT NULL AUTO_INCREMENT, version
     height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (`db_id`));
 
-CREATE TABLE IF NOT EXISTS lp_tokens (db_id bigint(20) NOT NULL AUTO_INCREMENT, lp_id bigint(20) NOT NULL,
-    token_id bigint(20) NOT NULL, factor INT NOT NULL,
+CREATE TABLE IF NOT EXISTS lp_assets (db_id bigint(20) NOT NULL AUTO_INCREMENT, lp_id bigint(20) NOT NULL,
+    asset_id bigint(20) NOT NULL, factor INT NOT NULL,
     height INT NOT NULL, latest BOOLEAN NOT NULL DEFAULT TRUE,
     PRIMARY KEY (`db_id`));
 

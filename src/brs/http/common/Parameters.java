@@ -77,7 +77,6 @@ public final class Parameters {
   public static final String SWAP_FEE_PARAMETER = "swapFee";
   public static final String PLATFORM_FEE_PARAMETER = "platformFee";
   public static final String PLATFORM_ACCOUNT_ID_PARAMETER = "platformAccountId";
-  public static final String TOKENS_PARAMETER = "tokens";
   public static final String FACTORS_PARAMETER = "factors";
   public static final String PERIOD_PARAMETER = "period";
   public static final String ESCROW_DEADLINE_PARAMETER = "escrowDeadline";

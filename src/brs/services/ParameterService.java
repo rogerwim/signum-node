@@ -6,6 +6,7 @@ import brs.crypto.EncryptedData;
 import brs.http.ParameterException;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.List;
 
 public interface ParameterService {
@@ -19,6 +20,10 @@ public interface ParameterService {
   Alias getAlias(HttpServletRequest req) throws ParameterException;
 
   Asset getAsset(HttpServletRequest req) throws ParameterException;
+  
+  List<Asset> getAssets(HttpServletRequest req) throws ParameterException;
+
+  List<Integer> getFactors(HttpServletRequest req) throws ParameterException;
 
   DigitalGoodsStore.Goods getGoods(HttpServletRequest req) throws ParameterException;
 

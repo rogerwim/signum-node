@@ -1498,7 +1498,7 @@ public abstract class TransactionType {
                 || attachment.getName().length()+3 > Constants.MAX_ASSET_NAME_LENGTH
                 || (attachment.getVersion()!=1)
                 ;
-        if(attachment.getFactors().size() != attachment.getTokens().size() || attachment.getTokens().size() < 2)
+        if(attachment.getFactors().size() != attachment.getAssetIds().size() || attachment.getAssetIds().size() < 2)
           invalid = true;
         for(Integer factor : attachment.getFactors()) {
           if(factor < 0 || factor > 100) {

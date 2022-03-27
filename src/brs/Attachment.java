@@ -1128,7 +1128,7 @@ public interface Attachment extends Appendix {
     private final int swapFee;
     private final int platformFee;
     private final long platformAccountId;
-    private final ArrayList<Long> tokens = new ArrayList<>();
+    private final ArrayList<Long> assetIds = new ArrayList<>();
     private final ArrayList<Integer> factors = new ArrayList<>();
 
     ColoredCoinsLPCreation(ByteBuffer buffer, byte transactionVersion) throws BurstException.NotValidException {
@@ -1147,7 +1147,7 @@ public interface Attachment extends Appendix {
         throw new BurstException.NotValidException("Invalid number of tokens");
       }
       for (int i = 0; i < numberOfTokens; i++) {
-        tokens.add(buffer.getLong());
+        assetIds.add(buffer.getLong());
       }
       for (int i = 0; i < numberOfTokens; i++) {
         int factor = buffer.getInt();
@@ -1165,9 +1165,9 @@ public interface Attachment extends Appendix {
       this.platformFee = JSON.getAsInt(attachmentData.get(PLATFORM_FEE_PARAMETER));
       this.platformAccountId = Convert.parseUnsignedLong(JSON.getAsString(attachmentData.get(PLATFORM_ACCOUNT_ID_PARAMETER)));
 
-      JsonArray tokensJson = JSON.getAsJsonArray(attachmentData.get(TOKENS_PARAMETER));
+      JsonArray tokensJson = JSON.getAsJsonArray(attachmentData.get(ASSETS_PARAMETER));
       for (JsonElement tokenJson : tokensJson) {
-        this.tokens.add(Convert.parseUnsignedLong(JSON.getAsString(tokenJson)));
+        this.assetIds.add(Convert.parseUnsignedLong(JSON.getAsString(tokenJson)));
       }
       JsonArray factorsJson = JSON.getAsJsonArray(attachmentData.get(FACTORS_PARAMETER));
       for (JsonElement factorJson : factorsJson) {
@@ -1182,7 +1182,7 @@ public interface Attachment extends Appendix {
       this.swapFee = swapFee;
       this.platformFee = platformFee;
       this.platformAccountId = platformAccountId;
-      this.tokens.addAll(tokens);
+      this.assetIds.addAll(tokens);
       this.factors.addAll(factors);
     }
 
@@ -1193,7 +1193,7 @@ public interface Attachment extends Appendix {
 
     @Override
     protected int getMySize() {
-      return 1 + 1 + Convert.toBytes(name).length + 4 + 4 + 8 + (8 * tokens.size()) + (4 * factors.size());
+      return 1 + 1 + Convert.toBytes(name).length + 4 + 4 + 8 + (8 * assetIds.size()) + (4 * factors.size());
     }
 
     @Override
@@ -1205,8 +1205,8 @@ public interface Attachment extends Appendix {
       buffer.putInt(platformFee);
       buffer.putLong(platformAccountId);
 
-      buffer.put((byte) tokens.size());
-      for(Long token : tokens) {
+      buffer.put((byte) assetIds.size());
+      for(Long token : assetIds) {
         buffer.putLong(token);
       }
       for(Integer factor : factors) {
@@ -1222,10 +1222,10 @@ public interface Attachment extends Appendix {
       attachment.addProperty(PLATFORM_ACCOUNT_ID_PARAMETER, Convert.toUnsignedLong(platformAccountId));
 
       JsonArray tokensArray = new JsonArray();
-      for(Long token : this.tokens) {
+      for(Long token : this.assetIds) {
         tokensArray.add(Convert.toUnsignedLong(token));
       }
-      attachment.add(TOKENS_PARAMETER, tokensArray);
+      attachment.add(ASSETS_PARAMETER, tokensArray);
 
       JsonArray factorsArray = new JsonArray();
       for(Integer factor : this.factors) {
@@ -1255,8 +1255,8 @@ public interface Attachment extends Appendix {
       return platformAccountId;
     }
 
-    public Collection<Long> getTokens() {
-      return Collections.unmodifiableCollection(tokens);
+    public Collection<Long> getAssetIds() {
+      return Collections.unmodifiableCollection(assetIds);
     }
 
     public Collection<Integer> getFactors() {

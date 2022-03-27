@@ -398,4 +398,35 @@ public class ParameterServiceImpl implements ParameterService {
   public boolean getEstimateCommitment(HttpServletRequest req) {
     return Boolean.parseBoolean(req.getParameter(ESTIMATE_COMMITMENT_PARAMETER));
   }
+
+  @Override
+  public List<Asset> getAssets(HttpServletRequest req) throws ParameterException {
+    
+    String[] assetsParameter = req.getParameterValues(ASSETS_PARAMETER);
+    
+    List<Asset> result = new ArrayList<>();
+    for (String s : assetsParameter) {
+      s = s.trim();
+      long id = Convert.parseUnsignedLong(s);
+      Asset a = null;
+      if(id != 0L) {
+        // for the 0 id we return null
+        a = assetExchange.getAsset(id);
+      }
+      result.add(a);
+    }
+    return result;
+  }
+
+  @Override
+  public List<Integer> getFactors(HttpServletRequest req) throws ParameterException {
+    String[] factorsParameter = req.getParameterValues(FACTORS_PARAMETER);
+    
+    List<Integer> result = new ArrayList<>();
+    for (String s : factorsParameter) {
+      s = s.trim();
+      result.add(Integer.parseInt(s));
+    }
+    return result;
+  }
 }

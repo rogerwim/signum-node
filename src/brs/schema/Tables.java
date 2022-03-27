@@ -21,8 +21,8 @@ import brs.schema.tables.FlywaySchemaHistory;
 import brs.schema.tables.Goods;
 import brs.schema.tables.IndirectIncoming;
 import brs.schema.tables.Lp;
+import brs.schema.tables.LpAssets;
 import brs.schema.tables.LpBalances;
-import brs.schema.tables.LpTokens;
 import brs.schema.tables.Peer;
 import brs.schema.tables.Purchase;
 import brs.schema.tables.PurchaseFeedback;
@@ -126,14 +126,14 @@ public class Tables {
     public static final Lp LP = Lp.LP;
 
     /**
+     * The table <code>DB.lp_assets</code>.
+     */
+    public static final LpAssets LP_ASSETS = LpAssets.LP_ASSETS;
+
+    /**
      * The table <code>DB.lp_balances</code>.
      */
     public static final LpBalances LP_BALANCES = LpBalances.LP_BALANCES;
-
-    /**
-     * The table <code>DB.lp_tokens</code>.
-     */
-    public static final LpTokens LP_TOKENS = LpTokens.LP_TOKENS;
 
     /**
      * The table <code>DB.peer</code>.

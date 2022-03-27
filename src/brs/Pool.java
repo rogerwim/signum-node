@@ -13,11 +13,11 @@ public class Pool {
   private final int swapFee;
   private final int platformFee;
   private final long platformAccountId;
-  private final Collection<Long> tokens;
+  private final Collection<Long> assetIds;
   private final Collection<Integer> factors;
 
   public Pool(byte version, long id, BurstKey dbKey, String name, int swapFee, int platformFee, long platformAccountId,
-      Collection<Long> tokens, Collection<Integer> factors) {
+      Collection<Long> assetIds, Collection<Integer> factors) {
     this.version = version;
     this.dbKey = dbKey;
     this.name = name;
@@ -25,7 +25,7 @@ public class Pool {
     this.swapFee = swapFee;
     this.platformFee = platformFee;
     this.platformAccountId = platformAccountId;
-    this.tokens = tokens;
+    this.assetIds = assetIds;
     this.factors = factors;
   }
 
@@ -37,7 +37,7 @@ public class Pool {
     this.swapFee = attachment.getSwapFee();
     this.platformFee = attachment.getPlatformFee();
     this.platformAccountId = attachment.getPlatformAccountId();
-    this.tokens = attachment.getTokens();
+    this.assetIds = attachment.getAssetIds();
     this.factors = attachment.getFactors();
   }
   
@@ -65,8 +65,8 @@ public class Pool {
     return platformFee;
   }
 
-  public Collection<Long> getTokens() {
-    return this.tokens;
+  public Collection<Long> getAssetIds() {
+    return this.assetIds;
   }
   
   public Collection<Integer> getFactors() {

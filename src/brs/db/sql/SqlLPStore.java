@@ -13,7 +13,7 @@ import brs.db.store.DerivedTableManager;
 import brs.db.store.PoolStore;
 
 import static brs.schema.tables.Lp.LP;
-import static brs.schema.tables.LpTokens.LP_TOKENS;
+import static brs.schema.tables.LpAssets.LP_ASSETS;
 
 public class SqlLPStore implements PoolStore {
 
@@ -52,12 +52,12 @@ public class SqlLPStore implements PoolStore {
       set(LP.HEIGHT, Burst.getBlockchain().getHeight()).execute();
     
     Iterator<Integer> factorIt = pool.getFactors().iterator();
-    Iterator<Long> tokenIt = pool.getTokens().iterator();
+    Iterator<Long> assetIt = pool.getAssetIds().iterator();
     while(factorIt.hasNext()) {
-        ctx.insertInto(LP_TOKENS).
-        set(LP_TOKENS.LP_ID, pool.getId()).
-        set(LP_TOKENS.TOKEN_ID, tokenIt.next()).
-        set(LP_TOKENS.FACTOR, factorIt.next()).
+        ctx.insertInto(LP_ASSETS).
+        set(LP_ASSETS.LP_ID, pool.getId()).
+        set(LP_ASSETS.ASSET_ID, assetIt.next()).
+        set(LP_ASSETS.FACTOR, factorIt.next()).
         set(LP.HEIGHT, Burst.getBlockchain().getHeight()).execute();
     }
   }
@@ -66,16 +66,16 @@ public class SqlLPStore implements PoolStore {
     
     long id = record.get(LP.LP_ID);
     
-    Collection<Long> tokens = ctx.selectFrom(LP_TOKENS)
-          .where(LP_TOKENS.LP_ID.equal(id)).and(LP_TOKENS.LATEST.isTrue())
-          .orderBy(LP_TOKENS.DB_ID.desc()).fetch().getValues(LP_TOKENS.TOKEN_ID);
-    Collection<Integer> factors = ctx.selectFrom(LP_TOKENS)
-          .where(LP_TOKENS.LP_ID.equal(id)).and(LP_TOKENS.LATEST.isTrue())
-          .orderBy(LP_TOKENS.DB_ID.desc()).fetch().getValues(LP_TOKENS.FACTOR);
+    Collection<Long> assetIds = ctx.selectFrom(LP_ASSETS)
+          .where(LP_ASSETS.LP_ID.equal(id)).and(LP_ASSETS.LATEST.isTrue())
+          .orderBy(LP_ASSETS.DB_ID.desc()).fetch().getValues(LP_ASSETS.ASSET_ID);
+    Collection<Integer> factors = ctx.selectFrom(LP_ASSETS)
+          .where(LP_ASSETS.LP_ID.equal(id)).and(LP_ASSETS.LATEST.isTrue())
+          .orderBy(LP_ASSETS.DB_ID.desc()).fetch().getValues(LP_ASSETS.FACTOR);
     
     return new Pool(record.get(LP.VERSION), id, assetDbKeyFactory.newKey(record.get(LP.LP_ID)),
         record.get(LP.NAME), record.get(LP.SWAP_FEE), record.get(LP.PLATFORM_FEE), record.get(LP.PLATFORM_ACCOUNT_ID),
-        tokens, factors);
+        assetIds, factors);
   }
 
   @Override
