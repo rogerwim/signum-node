@@ -13,7 +13,6 @@ import brs.Order.Bid;
 import brs.Trade;
 import brs.Trade.Event;
 import brs.Transaction;
-import brs.db.sql.SqlLPStore;
 import brs.db.store.*;
 import brs.services.AccountService;
 import brs.util.Listener;
@@ -62,7 +61,7 @@ public class AssetExchangeImpl implements AssetExchange {
   public int getAssetAccountsCount(Asset asset, long minimumQuantity, boolean ignoreTreasury) {
     return assetAccountService.getAssetAccountsCount(asset, minimumQuantity, ignoreTreasury);
   }
-  
+
   @Override
   public long getAssetCirculatingSupply(Asset asset, boolean ignoreTreasury) {
     return assetAccountService.getAssetCirculatingSupply(asset, ignoreTreasury);

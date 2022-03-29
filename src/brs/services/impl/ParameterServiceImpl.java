@@ -5,6 +5,7 @@ import brs.assetexchange.AssetExchange;
 import brs.at.AT;
 import brs.crypto.Crypto;
 import brs.crypto.EncryptedData;
+import brs.http.JSONResponses;
 import brs.http.ParameterException;
 import brs.http.common.Parameters;
 import brs.services.*;
@@ -69,12 +70,12 @@ public class ParameterServiceImpl implements ParameterService {
         throw new ParameterException(INCORRECT_HEIGHT);
       }
     }
-    
+
     try {
       BurstAddress accountAddress = Convert.parseAddress(accountId);
       Account account = height >= 0 ? accountService.getAccount(accountAddress.getSignedLongId(), height)
           : accountService.getAccount(accountAddress.getSignedLongId());
-      
+
       if(account == null && accountAddress.getPublicKey() == null) {
         throw new ParameterException(UNKNOWN_ACCOUNT);
       }
@@ -85,11 +86,11 @@ public class ParameterServiceImpl implements ParameterService {
       if(account.getPublicKey() == null && accountAddress.getPublicKey() != null) {
         account.setPublicKey(accountAddress.getPublicKey());
       }
-      
+
       if(accountAddress.getPublicKey() != null && account.getPublicKey() != null && !Arrays.equals(account.getPublicKey(), accountAddress.getPublicKey())) {
         throw new ParameterException(INCORRECT_ACCOUNT);
       }
-      
+
       return account;
     } catch (RuntimeException e) {
       throw new ParameterException(INCORRECT_ACCOUNT);
@@ -388,12 +389,12 @@ public class ParameterServiceImpl implements ParameterService {
   public boolean getIncludeIndirect(HttpServletRequest req) {
     return Boolean.parseBoolean(req.getParameter(INCLUDE_INDIRECT_PARAMETER));
   }
-  
+
   @Override
   public boolean getAmountCommitted(HttpServletRequest req) {
     return Boolean.parseBoolean(req.getParameter(GET_COMMITTED_AMOUNT_PARAMETER));
   }
-  
+
   @Override
   public boolean getEstimateCommitment(HttpServletRequest req) {
     return Boolean.parseBoolean(req.getParameter(ESTIMATE_COMMITMENT_PARAMETER));
@@ -401,9 +402,9 @@ public class ParameterServiceImpl implements ParameterService {
 
   @Override
   public List<Asset> getAssets(HttpServletRequest req) throws ParameterException {
-    
-    String[] assetsParameter = req.getParameterValues(ASSETS_PARAMETER);
-    
+
+    String[] assetsParameter = req.getParameter(ASSETS_PARAMETER).split(",");
+
     List<Asset> result = new ArrayList<>();
     for (String s : assetsParameter) {
       s = s.trim();
@@ -412,6 +413,9 @@ public class ParameterServiceImpl implements ParameterService {
       if(id != 0L) {
         // for the 0 id we return null
         a = assetExchange.getAsset(id);
+        if (a == null){
+          throw new ParameterException(JSONResponses.incorrect(ASSETS_PARAMETER));
+        }
       }
       result.add(a);
     }
@@ -420,8 +424,8 @@ public class ParameterServiceImpl implements ParameterService {
 
   @Override
   public List<Integer> getFactors(HttpServletRequest req) throws ParameterException {
-    String[] factorsParameter = req.getParameterValues(FACTORS_PARAMETER);
-    
+    String[] factorsParameter = req.getParameter(FACTORS_PARAMETER).split(",");
+
     List<Integer> result = new ArrayList<>();
     for (String s : factorsParameter) {
       s = s.trim();

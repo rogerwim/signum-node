@@ -125,6 +125,7 @@ public final class APIServlet extends HttpServlet {
     map.put("issueAsset", new IssueAsset(parameterService, blockchain, apiTransactionManager));
     map.put("mintAsset", new MintAsset(parameterService, blockchain, apiTransactionManager, assetExchange));
     map.put("distributeToAssetHolders", new DistributeToAssetHolders(parameterService, blockchain, apiTransactionManager, assetExchange, accountService));
+    map.put("createLP", new CreateLP(parameterService, blockchain, apiTransactionManager));
     map.put("addAssetTreasuryAccount", new AddAssetTreasuryAccount(parameterService, blockchain, apiTransactionManager, accountService));
     map.put("longConvert", LongConvert.instance);
     map.put("parseTransaction", new ParseTransaction(parameterService, transactionService));
@@ -171,7 +172,7 @@ public final class APIServlet extends HttpServlet {
     map.put("fullReset", new FullReset(blockchainProcessor, propertyService));
     map.put("popOff", new PopOff(blockchainProcessor, blockchain, blockService, propertyService));
     map.put("backupDB", new BackupDB(propertyService));
-    
+
     // Extra api for the custom network parameters
     if(params != null) {
       params.adjustAPIs(map);
@@ -273,7 +274,7 @@ public final class APIServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
     doGet(req, resp);
   }
-  
+
   @Override
   protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     doGet(req, resp);
@@ -302,7 +303,7 @@ public final class APIServlet extends HttpServlet {
         return;
       }
     }
-    
+
     if("OPTIONS".equals(req.getMethod())) {
       // For HTTP OPTIONS reply with ACCEPTED status code -- per CORS handshake
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
